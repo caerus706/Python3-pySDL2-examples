@@ -41,3 +41,6 @@ from sdl2 import *
 ```
 
 ##### Note: if you're running 64-bit python and you put the 32-bit sdl2 in system32 it will find it there by default, but the program won't run, (This is only if you don't properly set PYSDL2_DLL_PATH
+
+##### examples
+text.py is based on the one at [egDev] (https://egdev.wordpress.com/2014/03/14/python-sdl2-ttf-test/)
