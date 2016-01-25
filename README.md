@@ -1,6 +1,6 @@
-# pysdl2-text-example
+## pysdl2-text-example
 
-## this is a working example of SDL2 text with python 3.5
+### Python 3.5 examples of pySDL2
 
 pySDL2 favors python 2 at the moment, which makes it much harder to get some things working in Python 3.
 
