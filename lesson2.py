@@ -11,7 +11,6 @@ SCREEN_HEIGHT = 480
 def loadTexture(filePath, renderer):
     # loads bmp image
     # str.encode() converts string to byte type
-    print(filePath)
     loadedImage = SDL_LoadBMP(str.encode(filePath))
 
     if loadedImage:
