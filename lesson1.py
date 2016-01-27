@@ -26,7 +26,7 @@ def main():
         SDL_RENDERER_PRESENTVSYNC)
 
     # straight import path instead of dynamic loading for now
-    bmp = SDL_LoadBMP(b"resources/lesson1/hello.bmp")
+    bmp = SDL_LoadBMP(b"res/lesson1/hello.bmp")
 
     tex = SDL_CreateTextureFromSurface(ren, bmp)
 
