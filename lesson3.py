@@ -105,6 +105,7 @@ def main():
             x = int(i % xTiles)
             y = int(i / yTiles)
             renderTexture(background, ren, x * TILE_SIZE, y * TILE_SIZE, True)
+            print(x, y)
 
         # we want to draw image in center of window
         """
@@ -119,7 +120,7 @@ def main():
         # Update the screen
         SDL_RenderPresent(ren)
         # take short break
-        SDL_Delay(100)
+        SDL_Delay(1000)
 
     SDL_DestroyTexture(tex)
     SDL_DestroyRenderer(ren)
