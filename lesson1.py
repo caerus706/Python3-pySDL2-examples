@@ -22,8 +22,9 @@ def main():
 
     ren = SDL_CreateRenderer(
         win,
-        SDL_RENDERER_ACCELERATED,
-        SDL_RENDERER_PRESENTVSYNC)
+        -1,
+        SDL_RENDERER_ACCELERATED
+        )
 
     # straight import path instead of dynamic loading for now
     bmp = SDL_LoadBMP(b"res/lesson1/hello.bmp")

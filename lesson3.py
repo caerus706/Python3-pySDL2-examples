@@ -1,9 +1,13 @@
 from ctypes import c_long, pointer
 import ctypes
 from sdl2 import *
+from sdl2.sdlimage import *
 
+# screen size
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
+# tile size for scaling
+TILE_SIZE = 40
 
 
 # there are better ways to load textures
@@ -11,23 +15,18 @@ SCREEN_HEIGHT = 480
 def loadTexture(filePath, renderer):
     # loads bmp image
     # str.encode() converts string to byte type
-    loadedImage = SDL_LoadBMP(str.encode(filePath))
+    texture = IMG_LoadTexture(renderer, str.encode(filePath))
 
-    if loadedImage:
-        # creates texture from loadedImage
-        texture = SDL_CreateTextureFromSurface(renderer, loadedImage)
-        # free the loadedImage
-        SDL_FreeSurface(loadedImage)
+    if not texture:
+        # error check to make sure texture loaded
+        print("SDL_CreateTextureFromSurface")
 
-        if not texture:
-            # error check to make sure texture loaded
-            print("SDL_CreateTextureFromSurface")
-    else:
-        print("SDL_LoadBMP failed")
     return texture
 
 
-def renderTexture(tex, ren, x, y):
+# lesson 3 of the c++ uses function overloading
+# which doesn't do anything new for this
+def renderTexture(tex, ren, x, y, USE_TILE=False):
     # create destination rectangle to be at position we want
     dst = SDL_Rect(x, y)
 
@@ -35,9 +34,13 @@ def renderTexture(tex, ren, x, y):
     h = pointer(c_long(0))
 
     # Query texture to get its width and height to use
-    SDL_QueryTexture(tex, None, None, w, h)
-    dst.w = w.contents.value
-    dst.h = h.contents.value
+    if not USE_TILE:
+        SDL_QueryTexture(tex, None, None, w, h)
+        dst.w = w.contents.value
+        dst.h = h.contents.value
+    else:
+        dst.w = TILE_SIZE
+        dst.h = TILE_SIZE
     SDL_RenderCopy(ren, tex, None, dst)
 
 
@@ -47,6 +50,7 @@ def main():
 
     # there's no error checking at the moment
     # the interpreter will throw an error if there is a problem
+    # no cleanup function built yet, will change if made
 
     win = SDL_CreateWindow(
         b"Hello World",
@@ -66,9 +70,9 @@ def main():
         )
 
     # load image and create texture
-    resPath = "res/lesson2/"
-    background = loadTexture(resPath + 'background.bmp', ren)
-    image = loadTexture(resPath + 'image.bmp', ren)
+    resPath = "res/lesson3/"
+    background = loadTexture(resPath + 'background.png', ren)
+    image = loadTexture(resPath + 'image.png', ren)
 
     # check if images loaded, destroy if not
     if not background or not image:
@@ -91,27 +95,26 @@ def main():
 
         SDL_RenderClear(ren)
 
-        # uses pointers to get width and height from the texture
-        # so we know how much to move x, y to tile correctly
-        bW = pointer(c_long(0))
-        bH = pointer(c_long(0))
-        SDL_QueryTexture(background, None, None, bW, bH)
+        # Determine tiles needed to fill screen
+        # make sure they're integers with int()
+        xTiles = int(SCREEN_WIDTH / TILE_SIZE)
+        yTiles = int(SCREEN_HEIGHT / TILE_SIZE)
 
-        # pointers don't work the same here, had to add contents.value
-        # we want to tile the background 4 times
-        renderTexture(background, ren, 0, 0)
-        renderTexture(background, ren, bW.contents.value, 0)
-        renderTexture(background, ren, 0, bH.contents.value)
-        renderTexture(background, ren, bW.contents.value, bH.contents.value)
+        # Loop through the tiles
+        for i in range(xTiles * yTiles):
+            x = int(i % xTiles)
+            y = int(i / yTiles)
+            renderTexture(background, ren, x * TILE_SIZE, y * TILE_SIZE, True)
 
         # we want to draw image in center of window
+        """
         iW = pointer(c_long(0))
         iH = pointer(c_long(0))
         SDL_QueryTexture(image, None, None, iW, iH)
         # cast to int to make sure we don't get a float
         x = int(SCREEN_WIDTH / 2 - iW.contents.value / 2)
         y = int(SCREEN_HEIGHT / 2 - iH.contents.value / 2)
-        renderTexture(image, ren, x, y)
+        renderTexture(image, ren, x, y)"""
 
         # Update the screen
         SDL_RenderPresent(ren)
