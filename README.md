@@ -6,7 +6,7 @@ pySDL2 favors python 2 at the moment, which makes it much harder to get some thi
 
 Nothing worked until I figured out how it was expecting the calls.
 
-### Necessary changes
+#### Changes to get SDL2_ttf working in Python 3
 
 * The calls to TTF_* expect to be encoded in byte format
 * You need to either enclose a string in `b'text to send'` or format it to byte format like this `str.encode(textVariable)`
@@ -44,3 +44,4 @@ from sdl2 import *
 
 ##### examples
 text.py is based on the one at [egDev] (https://egdev.wordpress.com/2014/03/14/python-sdl2-ttf-test/)
+SDL 2.0 Lessons based on [Twinklebear] (https://github.com/Twinklebear/TwinklebearDev-Lessons)
