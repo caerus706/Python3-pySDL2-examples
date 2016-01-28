@@ -6,8 +6,6 @@ from sdl2.sdlimage import *
 # screen size
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
-# tile size for scaling
-TILE_SIZE = 40
 
 
 # there are better ways to load textures
@@ -70,16 +68,11 @@ def main():
         )
 
     # load image and create texture
-    resPath = "res/lesson3/"
-    background = loadTexture(resPath + 'background.png', ren)
+    resPath = "res/lesson4/"
     image = loadTexture(resPath + 'image.png', ren)
 
     # check if images loaded, destroy if not
-    if not background or not image:
-        if background:
-            SDL_DestroyTexture(background)
-        if image:
-            SDL_DestroyTexture(image)
+    if not image:
         SDL_DestroyRenderer(ren)
         SDL_DestroyWindow(win)
         SDL_Quit()
@@ -89,26 +82,18 @@ def main():
     running = True
     while running:
         while SDL_PollEvent(ctypes.byref(event)) != 0:
+            # check for quit
             if event.type == SDL_QUIT:
+                running = False
+                break
+            if event.type == SDL_KEYDOWN:
+                running = False
+                break
+            if event.type == SDL_MOUSEBUTTONDOWN:
                 running = False
                 break
 
         SDL_RenderClear(ren)
-
-        # Determine tiles needed to fill screen
-        # make sure they're integers with int()
-        xTiles = int(SCREEN_WIDTH / TILE_SIZE)
-        yTiles = int(SCREEN_HEIGHT / TILE_SIZE)
-
-        # Loop through the tiles
-        # nested for loop was easier to code
-        for horz in range(xTiles):
-            for vert in range(yTiles):
-                renderTexture(background,
-                              ren,
-                              horz * TILE_SIZE,
-                              vert * TILE_SIZE,
-                              True)
 
         # we want to draw image in center of window
         iW = pointer(c_long(0))
@@ -124,7 +109,6 @@ def main():
         # take short break
         SDL_Delay(1000)
 
-    SDL_DestroyTexture(background)
     SDL_DestroyTexture(image)
     SDL_DestroyRenderer(ren)
     SDL_DestroyWindow(win)

@@ -118,7 +118,8 @@ def main():
         # take short break
         SDL_Delay(100)
 
-    SDL_DestroyTexture(tex)
+    SDL_DestroyTexture(background)
+    SDL_DestroyTexture(image)
     SDL_DestroyRenderer(ren)
     SDL_DestroyWindow(win)
     SDL_Quit()
