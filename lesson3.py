@@ -101,21 +101,23 @@ def main():
         yTiles = int(SCREEN_HEIGHT / TILE_SIZE)
 
         # Loop through the tiles
-        for i in range(xTiles * yTiles):
-            x = int(i % xTiles)
-            y = int(i / yTiles)
-            renderTexture(background, ren, x * TILE_SIZE, y * TILE_SIZE, True)
-            print(x, y)
+        # nested for loop was easier to code
+        for horz in range(xTiles):
+            for vert in range(yTiles):
+                renderTexture(background,
+                              ren,
+                              horz * TILE_SIZE,
+                              vert * TILE_SIZE,
+                              True)
 
         # we want to draw image in center of window
-        """
         iW = pointer(c_long(0))
         iH = pointer(c_long(0))
         SDL_QueryTexture(image, None, None, iW, iH)
         # cast to int to make sure we don't get a float
         x = int(SCREEN_WIDTH / 2 - iW.contents.value / 2)
         y = int(SCREEN_HEIGHT / 2 - iH.contents.value / 2)
-        renderTexture(image, ren, x, y)"""
+        renderTexture(image, ren, x, y)
 
         # Update the screen
         SDL_RenderPresent(ren)

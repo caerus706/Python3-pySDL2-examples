@@ -20,6 +20,7 @@ Nothing worked until I figured out how it was expecting the calls.
 4. Place the dll's either in your project folder or your system folder.
    For example C:\Windows\SysWOW64\
 5. setup environment variable PYSDL2_DLL_PATH to whichever folder you set the sdl dll in. (If you don't want to constantly set your environment variable.) This may require a restart to work.
+6. lesson3 requires [SDL2_Image] (https://www.libsdl.org/projects/SDL_image/)
 
 #### Testing sdl2 import
 
