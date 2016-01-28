@@ -23,7 +23,7 @@ def main():
     ren = SDL_CreateRenderer(
         win,
         -1,
-        SDL_RENDERER_ACCELERATED
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
         )
 
     # straight import path instead of dynamic loading for now
