@@ -24,7 +24,7 @@ def loadTexture(filePath, renderer):
 
 # lesson 3 of the c++ uses function overloading
 # which doesn't do anything new for this
-def renderTexture(tex, ren, x, y, USE_TILE=False):
+def renderTexture(tex, ren, x, y):
     # create destination rectangle to be at position we want
     dst = SDL_Rect(x, y)
 
@@ -32,13 +32,10 @@ def renderTexture(tex, ren, x, y, USE_TILE=False):
     h = pointer(c_long(0))
 
     # Query texture to get its width and height to use
-    if not USE_TILE:
-        SDL_QueryTexture(tex, None, None, w, h)
-        dst.w = w.contents.value
-        dst.h = h.contents.value
-    else:
-        dst.w = TILE_SIZE
-        dst.h = TILE_SIZE
+    SDL_QueryTexture(tex, None, None, w, h)
+    dst.w = w.contents.value
+    dst.h = h.contents.value
+
     SDL_RenderCopy(ren, tex, None, dst)
 
 
@@ -51,7 +48,7 @@ def main():
     # no cleanup function built yet, will change if made
 
     win = SDL_CreateWindow(
-        b"Hello World",
+        b"Lesson 4",
         100,
         100,
         640,

@@ -53,7 +53,7 @@ def main():
     # no cleanup function built yet, will change if made
 
     win = SDL_CreateWindow(
-        b"Hello World",
+        b"Lesson 3",
         100,
         100,
         640,
