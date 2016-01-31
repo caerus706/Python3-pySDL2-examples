@@ -94,13 +94,18 @@ def main():
     sure i is kept as an int after division to have this calculate correctly.
     """
     for i in range(4):
-        print(int(i / 2) * cW, i % 2 * cW)
         clip = SDL_Rect(
             int(i / 2) * cW,
             i % 2 * cH,
             cW,
             cH)
         clips.append(clip)
+
+    # using cW, cH set me offscreen slightly
+    iW, iH = 200, 200
+
+    x = int(SCREEN_WIDTH / 2 - iW / 2)
+    y = int(SCREEN_HEIGHT / 2 - iH / 2)
 
     # create event to check in loop
     event = SDL_Event()
@@ -131,16 +136,6 @@ def main():
                     running = False
 
         SDL_RenderClear(ren)
-
-        # this could be calculated in renderTexture instead, but
-        # it is used to provide x, y
-        # we want to draw image in center of window
-        iW = pointer(c_long(0))
-        iH = pointer(c_long(0))
-        SDL_QueryTexture(image, None, None, iW, iH)
-        # cast to int to make sure we don't get a float
-        x = int(SCREEN_WIDTH / 2 - iW.contents.value / 2)
-        y = int(SCREEN_HEIGHT / 2 - iH.contents.value / 2)
 
         renderTexture(image, ren, x, y, clips[useClip])
 
