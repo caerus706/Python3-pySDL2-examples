@@ -21,38 +21,28 @@ def loadTexture(filePath, renderer):
 
     return texture
 
+"""
+Python doesn't really support function overloading. Instead we can set
+default values to use if the function call doesn't include it.
+"""
 
-# lesson 3 of the c++ uses function overloading
-# which doesn't do anything new for this
-def renderTexture(tex, ren, x, y, useClip=None, USE_CLIP=False):
+
+def renderTexture(tex, ren, x, y, clip=None):
     # create destination rectangle to be at position we want
-
     dst = SDL_Rect(x, y)
-    clipRec = SDL_Rect(x, y)
 
+    # create pointers to pass width and height to.
     w = pointer(c_long(0))
     h = pointer(c_long(0))
-
-    if USE_CLIP:
-        SDL_QueryTexture(tex, None, None, w, h)
-        dst.w = w.contents.value
-        dst.h = h.contents.value
-        # print(w.contents.value, h.contents.value)
-        clipRec.x = int((useClip['x'] * (w.contents.value / 2)))
-        clipRec.y = int((useClip['y'] * (h.contents.value / 2)))
-        clipRec.w = int(w.contents.value / 2)
-        clipRec.h = int(h.contents.value / 2)
-        # print(dst)
-        # print(clipRec)
 
     # Query texture to get its width and height to use
     SDL_QueryTexture(tex, None, None, w, h)
     dst.w = w.contents.value
     dst.h = h.contents.value
-    if not USE_CLIP:
+    if not clip:
         SDL_RenderCopy(ren, tex, None, dst)
     else:
-        SDL_RenderCopy(ren, tex, clipRec, dst)
+        SDL_RenderCopy(ren, tex, clip, dst)
 
 
 # This is an attempt to follow C++ Syntax on my conversion
@@ -91,10 +81,31 @@ def main():
         SDL_Quit()
 
     # Initial clip to use
-    useClip = {'x': 0, 'y': 0}
+    useClip = 0
+    # clip width and height is 100 and will simply be preset
+    cW, cH = 100, 100
+    # create list for rectangles
+    clips = []
+    # make loop to define the position
+    """
+    this one was difficult, numbers act different in python than c++
+    in c++ it's already an int from the for loop, but python doesn't
+    determine type until after the math is done. The solution is to make
+    sure i is kept as an int after division to have this calculate correctly.
+    """
+    for i in range(4):
+        print(int(i / 2) * cW, i % 2 * cW)
+        clip = SDL_Rect(
+            int(i / 2) * cW,
+            i % 2 * cH,
+            cW,
+            cH)
+        clips.append(clip)
 
+    # create event to check in loop
     event = SDL_Event()
 
+    # running allows us to break out of loop by setting to false
     running = True
     while running:
         while SDL_PollEvent(ctypes.byref(event)) != 0:
@@ -109,22 +120,20 @@ def main():
 
             if event.type == SDL_KEYDOWN:
                 if event.key.keysym.sym == SDLK_1:
-                    useClip['x'] = 0
-                    useClip['y'] = 0
+                    useClip = 0
                 if event.key.keysym.sym == SDLK_2:
-                    useClip['x'] = 1
-                    useClip['y'] = 0
+                    useClip = 1
                 if event.key.keysym.sym == SDLK_3:
-                    useClip['x'] = 0
-                    useClip['y'] = 1
+                    useClip = 2
                 if event.key.keysym.sym == SDLK_4:
-                    useClip['x'] = 1
-                    useClip['y'] = 1
+                    useClip = 3
                 if event.key.keysym.sym == SDLK_ESCAPE:
                     running = False
 
         SDL_RenderClear(ren)
 
+        # this could be calculated in renderTexture instead, but
+        # it is used to provide x, y
         # we want to draw image in center of window
         iW = pointer(c_long(0))
         iH = pointer(c_long(0))
@@ -133,9 +142,7 @@ def main():
         x = int(SCREEN_WIDTH / 2 - iW.contents.value / 2)
         y = int(SCREEN_HEIGHT / 2 - iH.contents.value / 2)
 
-        # renderTexture(image, ren, x, y)
-        # print(useClip['x'], useClip['y'])
-        renderTexture(image, ren, x, y, useClip, USE_CLIP=True)
+        renderTexture(image, ren, x, y, clips[useClip])
 
         # Update the screen
         SDL_RenderPresent(ren)
